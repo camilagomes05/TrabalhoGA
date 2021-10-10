@@ -29,7 +29,9 @@ using namespace std;
 
 #include "Shader.h"
 
-#include "Object.h"
+#include "Sprite.h"
+
+#include "Camera.h"
 
 #include <vector>
 
@@ -48,6 +50,14 @@ const GLuint WIDTH = 800, HEIGHT = 600;
 const int nPoints = 100 + 1 + 1; //+centro +cópia do primeiro
 const float pi = 3.14159;
 
+ //camera
+Camera camera(glm::vec3(0.0f, 10.0f, 30.0f));
+float lastX = WIDTH / 2.0f;
+float lastY = HEIGHT / 2.0f;
+bool firstMouse = true;
+
+float deltaTime = 0.0f;	// time between current frame and last frame
+float lastFrame = 0.0f;
 
 // Função MAIN
 int main()
@@ -69,7 +79,7 @@ int main()
 #endif
 
 	// Criação da janela GLFW
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Hello PG Framework!", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Encontre os Easter Eggs!", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 
 	// Fazendo o registro da função de callback para a janela GLFW
@@ -97,18 +107,19 @@ int main()
 
 	// Compilando e buildando o programa de shader
 	Shader* shader = new Shader("./shaders/sprite.vs", "./shaders/sprite.fs");
+	Shader* sprShader = new Shader("./shaders/animatedsprites.vs", "./shaders/animatedsprites.fs");
 
 	GLuint texID = loadTexture("./textures/mario.png");
 	GLuint texID2 = loadTexture("./textures/cenario.png");
-	GLuint texID3 = loadTexture("./textures/forest.png");
-	GLuint texID4 = loadTexture("./textures/player.png");
+	GLuint texID3 = loadTexture("./textures/City1.png");
+	GLuint texID4 = loadTexture("./textures/yoshi.png");
 
 
 
 	Object backgroud;
 	backgroud.initialize();
 	backgroud.setPosition(glm::vec3(400, 300, 0));
-	backgroud.setDimensions(glm::vec3(800, 600, 1.0));
+	backgroud.setDimensions(glm::vec3(600, 400, 1.0));
 	backgroud.setTexture(texID3);
 	backgroud.setShader(shader);
 	//obj.update();
@@ -141,6 +152,13 @@ int main()
 		}
 	}
 
+	Sprite sprPlayer;
+	sprPlayer.initialize();
+	sprPlayer.setSpriteSheet(texID4, 2, 8);
+	sprPlayer.setPosition(glm::vec3(350.0, 200.0, 0));
+	sprPlayer.setDimensions(glm::vec3(100.0, 100.0, 1.0));
+	sprPlayer.setShader(sprShader);
+	sprPlayer.setAnimation(1);
 
 	// Gerando um buffer simples, com a geometria de um triângulo
 	//GLuint VAO = setupGeometry();
@@ -160,10 +178,13 @@ int main()
 	assert(modelLoc > -1);
 
 	glUniform1i(glGetUniformLocation(shader->Program, "tex1"), 0);
-
+		
 	glm::mat4 ortho = glm::mat4(1); //inicializa com a matriz identidade
 
 	glm::mat4 model = glm::mat4(1);
+
+	glm::mat4 projection(1);
+	projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
 
 	//shader->setMat4("projection", glm::value_ptr(ortho)),
 
@@ -181,6 +202,7 @@ int main()
 		glViewport(0, 0, width, height);
 
 		ortho = glm::ortho(xmin, xmax, ymin, ymax, -1.0, 1.0);
+
 
 		/*double ratio;
 		if (width >= height)
@@ -211,23 +233,14 @@ int main()
 		glLineWidth(10);
 		glPointSize(10);
 
-		// Chamada de desenho - drawcall
-		// Poligono Preenchido - GL_TRIANGLES
-		/*glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, texID);
+		glm::mat4 view(1);
 
-		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glBindVertexArray(0);*/
+		projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+		view = camera.GetViewMatrix();
 
-		/*obj.update();
-		obj.draw();
-
-		obj2.update();
-		obj2.draw();*/
-
-		float newRot = (float)glfwGetTime();
-		objects[0].setAngle(newRot);
+		//Chamar sprints
+		/*float newRot = (float)glfwGetTime();
+		objects[0].setAngle(newRot);*/
 
 		backgroud.update();
 		backgroud.draw();
@@ -235,22 +248,34 @@ int main()
 		player.update();
 		player.draw();
 
-
-		/*for (int i = 0; i < objects.size(); i++) {
-		
-			objects[i].update();
-			objects[i].draw();
-		}*/
+		sprPlayer.update();
+		sprPlayer.draw();
 
 
 		// Troca os buffers da tela
 		glfwSwapBuffers(window);
 	}
+
 	// Pede pra OpenGL desalocar os buffers
 	glDeleteVertexArrays(1, &VAO);
 	// Finaliza a execução da GLFW, limpando os recursos alocados por ela
 	glfwTerminate();
 	return 0;
+}
+
+void processInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+
+	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+		camera.ProcessKeyboard(FORWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		camera.ProcessKeyboard(BACKWARD, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		camera.ProcessKeyboard(LEFT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		camera.ProcessKeyboard(RIGHT, deltaTime);
 }
 
 // Função de callback de teclado - só pode ter uma instância (deve ser estática se
@@ -260,6 +285,29 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
+
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+	lastX = xpos;
+	lastY = ypos;
+
+	camera.ProcessMouseMovement(xoffset, yoffset);
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	camera.ProcessMouseScroll(yoffset);
 }
 
 // Esta função está bastante harcoded - objetivo é criar os buffers que armazenam a 

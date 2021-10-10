@@ -11,6 +11,7 @@ void Object::initialize()
 		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
 		-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, 1.0  // top left 
 	};
+
 	unsigned int indices[] = {
 	0, 1, 3, // first triangle
 	1, 2, 3  // second triangle
@@ -39,6 +40,12 @@ void Object::initialize()
 	glEnableVertexAttribArray(2);
 
 	glBindVertexArray(0);
+
+	transform = glm::mat4(1);
+	position = glm::vec3(0.0, 0.0, 0.0);
+	scale = glm::vec3(1.0, 1.0, 1.0);
+	angle = 0.0;
+	shader = NULL;
 }
 
 void Object::update()
@@ -64,13 +71,6 @@ void Object::draw()
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
-
-	transform = glm::mat4(1);
-	position = glm::vec3(0.0, 0.0, 0.0);
-	scale = glm::vec3(1.0, 1.0, 1.0);
-	angle = 0.0;
-	shader = NULL;
-	texID = 0;
 }
 
 void Object::setRotation(float angle, glm::vec3 axis, bool reset)
