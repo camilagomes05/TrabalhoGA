@@ -29,9 +29,9 @@ using namespace std;
 
 #include "Shader.h"
 
-#include "Sprite.h"
+#include "Object.h"
 
-#include "Camera.h"
+#include "Sprite.h"
 
 #include <vector>
 
@@ -41,23 +41,12 @@ using namespace std;
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 // Protótipos das funções
-int setupGeometry();
+//int setupGeometry();
 int loadTexture(string path);
 GLuint createSprite();
 
 // Dimensões da janela (pode ser alterado em tempo de execução)
 const GLuint WIDTH = 800, HEIGHT = 600;
-const int nPoints = 100 + 1 + 1; //+centro +cópia do primeiro
-const float pi = 3.14159;
-
- //camera
-Camera camera(glm::vec3(0.0f, 10.0f, 30.0f));
-float lastX = WIDTH / 2.0f;
-float lastY = HEIGHT / 2.0f;
-bool firstMouse = true;
-
-float deltaTime = 0.0f;	// time between current frame and last frame
-float lastFrame = 0.0f;
 
 // Função MAIN
 int main()
@@ -83,7 +72,9 @@ int main()
 	glfwMakeContextCurrent(window);
 
 	// Fazendo o registro da função de callback para a janela GLFW
+	//glfwSetKeyCallback(window, key_callback);
 	glfwSetKeyCallback(window, key_callback);
+
 
 	// GLAD: carrega todos os ponteiros d funções da OpenGL
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -101,8 +92,8 @@ int main()
 	//glEnable(GL_DEPTH_TEST);
 
 	
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC1_ALPHA);
+	 glEnable(GL_BLEND);
+	 glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 
 	// Compilando e buildando o programa de shader
@@ -112,21 +103,34 @@ int main()
 	GLuint texID = loadTexture("./textures/mario.png");
 	GLuint texID2 = loadTexture("./textures/cenario.png");
 	GLuint texID3 = loadTexture("./textures/City1.png");
-	GLuint texID4 = loadTexture("./textures/yoshi.png");
+	GLuint texID4 = loadTexture("./textures/player.png");
+	GLuint texID5 = loadTexture("./textures/characterRun.png");
+	GLuint texID6 = loadTexture("./textures/yoshi.png");
 
+
+	//Sorteio de posições dos objetos e Sprite
+
+	float posX = 0.0, posY = 0.0;
+	srand(time(NULL)); //É para gerar um numero aleatorio todas as vezes que abrir o programa
+
+	do
+	{
+		posX = rand() % 800; // Vai gerar o numero entre 0 e 799
+		posY = rand() % 600; // Vai gerar o numero entre 0 e 599
+	} while (posX == 0.0 || posY == 0.0); //Vai sorteando até que o "a" não seja um número que eu defini
 
 
 	Object backgroud;
 	backgroud.initialize();
 	backgroud.setPosition(glm::vec3(400, 300, 0));
-	backgroud.setDimensions(glm::vec3(600, 400, 1.0));
+	backgroud.setDimensions(glm::vec3(800, 600, 1.0));
 	backgroud.setTexture(texID3);
 	backgroud.setShader(shader);
 	//obj.update();
 
 	Object player;
 	player.initialize();
-	player.setPosition(glm::vec3(200, 300, 0));
+	player.setPosition(glm::vec3(posX, posY, 0.0));
 	player.setDimensions(glm::vec3(128.0, 128.0, 1.0));
 	player.setTexture(texID4);
 	player.setShader(shader);
@@ -154,11 +158,19 @@ int main()
 
 	Sprite sprPlayer;
 	sprPlayer.initialize();
-	sprPlayer.setSpriteSheet(texID4, 2, 8);
-	sprPlayer.setPosition(glm::vec3(350.0, 200.0, 0));
-	sprPlayer.setDimensions(glm::vec3(100.0, 100.0, 1.0));
+	sprPlayer.setSpriteSheet(texID5, 1, 2);
+	sprPlayer.setPosition(glm::vec3(posX, posY, 0));
+	sprPlayer.setDimensions(glm::vec3(40.0, 40.0, 1.0));
 	sprPlayer.setShader(sprShader);
 	sprPlayer.setAnimation(1);
+
+	Sprite sprPlayer2;
+	sprPlayer2.initialize();
+	sprPlayer2.setSpriteSheet(texID6, 2, 8);
+	sprPlayer2.setPosition(glm::vec3(posX, posY, 0.0));
+	sprPlayer2.setDimensions(glm::vec3(100.0, 100.0, 1.0));
+	sprPlayer2.setShader(sprShader);
+	sprPlayer2.setAnimation(1);
 
 	// Gerando um buffer simples, com a geometria de um triângulo
 	//GLuint VAO = setupGeometry();
@@ -183,10 +195,6 @@ int main()
 
 	glm::mat4 model = glm::mat4(1);
 
-	glm::mat4 projection(1);
-	projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-
-	//shader->setMat4("projection", glm::value_ptr(ortho)),
 
 	double xmin = 0.0, xmax = 800.0, ymin = 0.0, ymax = 600.0;
 
@@ -203,21 +211,9 @@ int main()
 
 		ortho = glm::ortho(xmin, xmax, ymin, ymax, -1.0, 1.0);
 
-
-		/*double ratio;
-		if (width >= height)
-		{
-			ratio = width / (float)height;
-			ortho = glm::ortho(xmin*ratio, xmax*ratio, ymin, ymax, -1.0, 1.0);
-		}
-		else {
-			ratio = height / (float)width;
-			ortho = glm::ortho(xmin, xmax, ymin * ratio, ymax * ratio, -1.0, 1.0);
-		}*/
 		model = glm::mat4(1); //matriz identidade para "limpar a matriz"
 
 		model = glm::translate(model, glm::vec3(400.0f, 300.0f, 0.0f));
-		//model = glm::rotate(model, (float)glfwGetTime()/*glm::radians(45.0f)*/, glm::vec3(0.0, 0.0, 1.0));
 		model = glm::scale(model, glm::vec3(302.0f, 402.f, 1.0));
 
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
@@ -225,22 +221,9 @@ int main()
 		//Enviar a matriz de projeção ortográfica para o shader
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(ortho));
 
-
-		// Limpa o buffer de cor
-		glClearColor(0.3f, 0.3f, 0.3f, 1.0f); //cor de fundo
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		glLineWidth(10);
-		glPointSize(10);
-
-		glm::mat4 view(1);
-
-		projection = glm::perspective(glm::radians(camera.Zoom), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-		view = camera.GetViewMatrix();
-
 		//Chamar sprints
-		/*float newRot = (float)glfwGetTime();
-		objects[0].setAngle(newRot);*/
+		float newRot = (float)glfwGetTime();
+		objects[0].setAngle(newRot);
 
 		backgroud.update();
 		backgroud.draw();
@@ -250,6 +233,9 @@ int main()
 
 		sprPlayer.update();
 		sprPlayer.draw();
+
+		sprPlayer2.update();
+		sprPlayer2.draw();
 
 
 		// Troca os buffers da tela
@@ -263,118 +249,10 @@ int main()
 	return 0;
 }
 
-void processInput(GLFWwindow* window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-		camera.ProcessKeyboard(FORWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-		camera.ProcessKeyboard(BACKWARD, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
-		camera.ProcessKeyboard(LEFT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		camera.ProcessKeyboard(RIGHT, deltaTime);
-}
-
-// Função de callback de teclado - só pode ter uma instância (deve ser estática se
-// estiver dentro de uma classe) - É chamada sempre que uma tecla for pressionada
-// ou solta via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
-}
-
-void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-{
-	if (firstMouse)
-	{
-		lastX = xpos;
-		lastY = ypos;
-		firstMouse = false;
-	}
-
-	float xoffset = xpos - lastX;
-	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-
-	lastX = xpos;
-	lastY = ypos;
-
-	camera.ProcessMouseMovement(xoffset, yoffset);
-}
-
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
-{
-	camera.ProcessMouseScroll(yoffset);
-}
-
-// Esta função está bastante harcoded - objetivo é criar os buffers que armazenam a 
-// geometria de um triângulo
-// Apenas atributo coordenada nos vértices
-// 1 VBO com as coordenadas, VAO com apenas 1 ponteiro para atributo
-// A função retorna o identificador do VAO
-int setupGeometry()
-{
-	// Aqui setamos as coordenadas x, y e z do triângulo e as armazenamos de forma
-	// sequencial, já visando mandar para o VBO (Vertex Buffer Objects)
-	// Cada atributo do vértice (coordenada, cores, coordenadas de textura, normal, etc)
-	// Pode ser arazenado em um VBO único ou em VBOs separados
-	GLfloat* vertices;
-
-	vertices = new GLfloat[nPoints * 3];
-
-	float angle = 0.0;
-	float deltaAngle = 2 * pi / (float)(nPoints - 2);
-	float radius = 0.5;
-
-	//Adicionar o centro
-	vertices[0] = 0.0; // x
-	vertices[1] = 0.0; // y
-	vertices[2] = 0.0; // z sempre zero 
-
-	for (int i = 3; i < nPoints * 3; i += 3)
-	{
-		vertices[i] = radius * cos(angle);
-		vertices[i + 1] = radius * sin(angle);
-		vertices[i + 2] = 0.0;
-
-		angle += deltaAngle;
-	}
-
-	GLuint VBO, VAO;
-
-	//Geração do identificador do VBO
-	glGenBuffers(1, &VBO);
-	//Faz a conexão (vincula) do buffer como um buffer de array
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//Envia os dados do array de floats para o buffer da OpenGl
-	glBufferData(GL_ARRAY_BUFFER, (nPoints * 3) * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
-
-	//Geração do identificador do VAO (Vertex Array Object)
-	glGenVertexArrays(1, &VAO);
-	// Vincula (bind) o VAO primeiro, e em seguida  conecta e seta o(s) buffer(s) de vértices
-	// e os ponteiros para os atributos 
-	glBindVertexArray(VAO);
-	//Para cada atributo do vertice, criamos um "AttribPointer" (ponteiro para o atributo), indicando: 
-	// Localização no shader * (a localização dos atributos devem ser correspondentes no layout especificado no vertex shader)
-	// Numero de valores que o atributo tem (por ex, 3 coordenadas xyz) 
-	// Tipo do dado
-	// Se está normalizado (entre zero e um)
-	// Tamanho em bytes 
-	// Deslocamento a partir do byte zero 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	// Observe que isso é permitido, a chamada para glVertexAttribPointer registrou o VBO como o objeto de buffer de vértice 
-	// atualmente vinculado - para que depois possamos desvincular com segurança
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-	// Desvincula o VAO (é uma boa prática desvincular qualquer buffer ou array para evitar bugs medonhos)
-	glBindVertexArray(0);
-
-	return VAO;
 }
 
 int loadTexture(string path)
@@ -425,39 +303,7 @@ GLuint createSprite()
 	GLuint VAO;
 	GLuint VBO, EBO;
 
-	float vertices[] = {
-		// positions          // colors          // texture coords
-		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0, // top right
-		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-		-0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, 1.0  // top left 
-	};
-	unsigned int indices[] = {
-	0, 1, 3, // first triangle
-	1, 2, 3  // second triangle
-	};
-
 	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	// position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	// color attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-	// texture coord attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-	glEnableVertexAttribArray(2);
 
 	return VAO;
 }

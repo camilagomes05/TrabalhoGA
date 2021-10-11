@@ -12,19 +12,19 @@ void Sprite::setSpriteSheet(GLuint texID, int nAnimations, int nFrames)
     dx = 1.0 / (float)nFrames;
     dy = 1.0 / (float)nAnimations;
 
-	GLuint VBO, EBO;
-
     float vertices[] = {
-        // positions          // colors          // texture coords
+        // positions         // colors           // texture coords
         0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   dx, dy, // top right
         0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   dx, 0.0f, // bottom right
-        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f,   0.0f, dy  // top left 
+       -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
+       -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, dy  // top left 
     };
 
+	GLuint VBO, EBO;
+
 	unsigned int indices[] = {
-	0, 1, 3, // first triangle
-	1, 2, 3  // second triangle
+		0, 1, 3, // first triangle
+		1, 2, 3  // second triangle
 	};
 
 	glGenVertexArrays(1, &VAO);
@@ -55,8 +55,7 @@ void Sprite::setSpriteSheet(GLuint texID, int nAnimations, int nFrames)
 	position = glm::vec3(0.0, 0.0, 0.0);
 	scale = glm::vec3(1.0, 1.0, 1.0);
 	angle = 0.0;
-	shader = NULL;
-
+	shader = NULL;	
 }
 
 void Sprite::update()
@@ -66,7 +65,7 @@ void Sprite::update()
 	//Atualizar a matriz de transformãção do objeto
 	transform = glm::mat4(1);
 
-	setTranslation(position);
+ 	setTranslation(position);
 	setRotation(angle, glm::vec3(0.0, 0.0, 1.0));
 	setScale(scale);
 

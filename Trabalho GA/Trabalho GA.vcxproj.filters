@@ -30,25 +30,22 @@
     <ClInclude Include="Object.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Arquivos de Cabeçalho</Filter>
-    </ClInclude>
     <ClInclude Include="Sprite.h">
       <Filter>Arquivos de Cabeçalho</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\sprite.fs">
-      <Filter>shaders</Filter>
+      <Filter>Arquivos de Recurso\shaders</Filter>
     </None>
     <None Include="shaders\sprite.vs">
-      <Filter>shaders</Filter>
+      <Filter>Arquivos de Recurso\shaders</Filter>
     </None>
     <None Include="shaders\animatedsprites.fs">
-      <Filter>shaders</Filter>
+      <Filter>Arquivos de Recurso\shaders</Filter>
     </None>
     <None Include="shaders\animatedsprites.vs">
-      <Filter>shaders</Filter>
+      <Filter>Arquivos de Recurso\shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -61,7 +58,7 @@
     <Filter Include="Arquivos de Recurso">
       <UniqueIdentifier>{96fb57d8-3fec-495b-8e48-86a30e1db4ef}</UniqueIdentifier>
     </Filter>
-    <Filter Include="shaders">
+    <Filter Include="Arquivos de Recurso\shaders">
       <UniqueIdentifier>{4700357f-1027-4fc5-84fe-c4fa4c8f03a0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
