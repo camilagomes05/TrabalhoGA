@@ -46,15 +46,6 @@ void Object::initialize()
 	scale = glm::vec3(1.0, 1.0, 1.0);
 	angle = 0.0;
 	shader = NULL;
-
-	if (GLFW_KEY_W == GLFW_PRESS)
-		position = glm::vec3(0.0, 1.0, 0.0);
-	if (GLFW_KEY_S == GLFW_PRESS)
-		position = glm::vec3(0.0, -1.0, 0.0);
-	if (GLFW_KEY_A == GLFW_PRESS)
-		position = glm::vec3(-1.0, 0.0, 0.0);
-	if (GLFW_KEY_D == GLFW_PRESS)
-		position = glm::vec3(1.0, 0.0, 0.0);
 }
 
 void Object::update()
@@ -69,6 +60,15 @@ void Object::update()
 	setScale(scale);
 
 	shader->setMat4("model", glm::value_ptr(transform));
+
+	if (GLFW_KEY_W == GLFW_PRESS)
+		position = glm::vec3(0.0, 1.0, 0.0);
+	if (GLFW_KEY_S == GLFW_PRESS)
+		position = glm::vec3(0.0, -1.0, 0.0);
+	if (GLFW_KEY_A == GLFW_PRESS)
+		position = glm::vec3(-1.0, 0.0, 0.0);
+	if (GLFW_KEY_D == GLFW_PRESS)
+		position = glm::vec3(1.0, 0.0, 0.0);
 }
 
 void Object::draw()

@@ -351,15 +351,14 @@ int main()
 	GLint projLoc = glGetUniformLocation(shader->Program, "projection");
 	assert(projLoc > -1);
 
-	GLint modelLoc = glGetUniformLocation(shader->Program, "model");
-	assert(modelLoc > -1);
-
 	glUniform1i(glGetUniformLocation(shader->Program, "tex1"), 0);
-		
+
+	sprShader->Use();
+
+	glUniform1i(glGetUniformLocation(sprShader->Program, "tex1"), 0);
+
+
 	glm::mat4 ortho = glm::mat4(1); //inicializa com a matriz identidade
-
-	glm::mat4 model = glm::mat4(1);
-
 
 	double xmin = 0.0, xmax = 800.0, ymin = 0.0, ymax = 600.0;
 
@@ -467,6 +466,9 @@ int main()
 
 		player28.update();
 		player28.draw();
+
+		sprShader->Use();
+		sprShader->setMat4("projection", glm::value_ptr(ortho));
 
 		sprPlayer.update();
 		sprPlayer.draw();
