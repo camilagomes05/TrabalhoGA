@@ -1,7 +1,0 @@
-﻿  Origem.cpp
-C:\Users\camyl\OneDrive\Área de Trabalho\TrabalhoGA- Camila - Pamela\Trabalho GA\Origem.cpp(114,12): warning C4244: 'argumento': conversão de 'time_t' para 'unsigned int', possível perda de dados
-C:\Users\camyl\OneDrive\Área de Trabalho\TrabalhoGA- Camila - Pamela\Trabalho GA\Origem.cpp(118,17): warning C4244: '=': conversão de 'int' para 'float', possível perda de dados
-C:\Users\camyl\OneDrive\Área de Trabalho\TrabalhoGA- Camila - Pamela\Trabalho GA\Origem.cpp(119,17): warning C4244: '=': conversão de 'int' para 'float', possível perda de dados
-C:\Users\camyl\OneDrive\Área de Trabalho\TrabalhoGA- Camila - Pamela\Trabalho GA\Origem.cpp(304,14): warning C4101: 'EBO': variável local não referenciada
-C:\Users\camyl\OneDrive\Área de Trabalho\TrabalhoGA- Camila - Pamela\Trabalho GA\Origem.cpp(304,9): warning C4101: 'VBO': variável local não referenciada
-  Trabalho GA.vcxproj -> C:\Users\camyl\OneDrive\Área de Trabalho\TrabalhoGA- Camila - Pamela\Trabalho GA\Debug\Trabalho GA.exe
