@@ -1,0 +1,37 @@
+Trabalho Unisinos - 2/2021
+
+Nomes: Camila e Pamela
+
+As dependências estão pré-compiladas para Windows 10 32-bits e compilador do Visual Studio 2019
+Se o seu ambiente de desenvolvimento for diferente, você deve baixar:
+
+- GLFW: https://www.glfw.org/
+- GLAD: https://glad.dav1d.de/ - para mais instruções, consulte: https://learnopengl.com/Getting-started/Creating-a-window
+
+ Ao abrir o projeto, pode ser que seja necessário mudar a arquitetura para x86 (caso queira usar as dependências que vieram com o projeto):
+
+O trabalho é definido por criar Easter Eggs em lugares aleatórios para que possamos os encontrar
+
+Os Easter Eggs são:
+- Harry Potter
+- Pomo de Ouro
+- Dobby
+- 2 Poções
+- Ronald Weasley
+- Hermione Granger
+- Rúbeo Hagrid
+- Chapéu Seletor
+- Lord Voldemort
+- Albus Dumbledore
+- Draco Malfoy
+- Coruja Edwiges
+- Varinha das Varinhas
+- Minerva McGonagall
+- Severus Snape
+- Nimbus 2000
+- Óculos e raio do Harry
+- 4 gatos
+- Morcego
+- Fofo (Cachorro de 3 cabeças)
+- Dementador
+
