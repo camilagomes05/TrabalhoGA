@@ -56,13 +56,6 @@ void Sprite::setSpritesheet(GLuint texID, int nAnimations, int nFrames)
 	scale = glm::vec3(1.0, 1.0, 1.0);
 	angle = 0.0;
 	shader = NULL;	
-
-	//Teclado
-	if (GetAsyncKeyState(VK_LEFT) & 1)
-		// Seta para esquerda pressionada
-		position = glm::vec3(-1.0, 0.0, 0.0);
-	else if (GetAsyncKeyState(VK_RIGHT) & 1)
-		position = glm::vec3(1.0, 0.0, 0.0);
 }
 
 void Sprite::update()
