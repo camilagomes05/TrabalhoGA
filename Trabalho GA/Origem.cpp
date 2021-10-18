@@ -172,14 +172,14 @@ int main()
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 		glViewport(0, 0, width, height);
-
 		ortho = glm::ortho(xmin, xmax, ymin, ymax, -1.0, 1.0);
+
 
 		//Enviar a matriz de projeção ortográfica para o shader
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(ortho));
 
-		//Chamar sprints e objects
 
+		//Chamar objects
 		backgroud.update();
 		backgroud.draw();
 
@@ -191,11 +191,15 @@ int main()
 			p++;
 		}
 
+		// Para o Yoshi caminhar lentamente
 		Sleep(200);
+
 
 		sprShader->Use();
 		sprShader->setMat4("projection", glm::value_ptr(ortho));
 
+
+		// Yoshi caminhar
 		if (playerFacingRight) {
 			if (walking) {
 				sprPlayer.setAnimation(1);
@@ -219,7 +223,7 @@ int main()
 			}
 		}
 		
-
+		//Chamar sprite
 		sprPlayer.update();
 		sprPlayer.draw();
 
@@ -234,6 +238,7 @@ int main()
 	return 0;
 }
 
+//Chamada de teclado
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -269,8 +274,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		playerFacingLeft = false;
 		playerFacingUp = false;
 		playerFacingDown = true;
-		walking = true;
-	
+		walking = true;	
 	}
 		
 }
