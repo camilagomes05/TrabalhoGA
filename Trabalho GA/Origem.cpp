@@ -45,7 +45,7 @@ int loadTexture(string path);
 GLuint createSprite();
 
 // Dimensões da janela (pode ser alterado em tempo de execução)
-const GLuint WIDTH = 1000, HEIGHT = 600;
+const GLuint WIDTH = 800, HEIGHT = 600;
 
 // Função MAIN
 int main()
@@ -126,7 +126,7 @@ int main()
 
 		img[i] = loadTexture("./textures/sh" + to_string(y) + ".png");
 		player[i].initialize();
-		player[i].setPosition(glm::vec3(posX[i + 1] = (rand() % 1000), posY[i + 1] = (rand() % 600), 0.0));
+		player[i].setPosition(glm::vec3(posX[i + 1] = (rand() % 700), posY[i + 1] = (rand() % 500), 0.0));
 		player[i].setDimensions(glm::vec3(20.0, 20.0, 1.0));
 		player[i].setTexture(img[i]);
 		player[i].setShader(shader);
@@ -140,7 +140,7 @@ int main()
 
 	Sprite sprPlayer;
 	sprPlayer.setSpritesheet(texID2, 2, 8);
-	sprPlayer.setPosition(glm::vec3(20.0, 20.0, 0.0));
+	sprPlayer.setPosition(glm::vec3(25.0, 25.0, 0.0));
 	sprPlayer.setDimensions(glm::vec3(30.0, 30.0, 1.0));
 	sprPlayer.setShader(sprShader);
 	sprPlayer.setAnimation(1);
@@ -225,23 +225,23 @@ int main()
 
 
 		//Colisão das bordas
-		if (sprPlayer.getPosition().x == 1000) {
+		if (sprPlayer.getPosition().x >= 800) {
 			sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x - 10, sprPlayer.getPosition().y, 1));
-			playerFacingLeft = true;
-		}
-
-		else if (sprPlayer.getPosition().x < 0) {
-			sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x + 10, sprPlayer.getPosition().y, 1));
 			playerFacingRight = true;
 		}
 
-		else if (sprPlayer.getPosition().y == 800) {
-			sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x, sprPlayer.getPosition().y - 10, 1));
-			down = true;
+		else if (sprPlayer.getPosition().x <= 0) {
+			sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x + 10, sprPlayer.getPosition().y, 1));
+			playerFacingLeft = false;
 		}
-		else if (sprPlayer.getPosition().y < 0) {
-			sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x, sprPlayer.getPosition().y + 10, 1));
+
+		else if (sprPlayer.getPosition().y >= 600) {
+			sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x, sprPlayer.getPosition().y - 10, 1));
 			up = true;
+		}
+		else if (sprPlayer.getPosition().y <= 0) {
+			sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x, sprPlayer.getPosition().y + 10, 1));
+			down = true;
 		}
 
 		
