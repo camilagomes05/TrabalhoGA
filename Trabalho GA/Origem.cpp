@@ -28,8 +28,16 @@ using namespace std;
 
 using namespace std;
 
+bool playerFacingRight = true;
+bool playerFacingLeft = true;
+bool playerFacingUp = true;
+bool playerFacingDown = true;
+bool walking = false;
+
+
 // Protótipo da função de callback de teclado
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+
 
 // Protótipos das funções
 //int setupGeometry();
@@ -87,11 +95,9 @@ int main()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
 	// Compilando e buildando o programa de shader
 	Shader* shader = new Shader("./shaders/sprite.vs", "./shaders/sprite.fs");
 	Shader* sprShader = new Shader("./shaders/animatedsprites.vs", "./shaders/animatedsprites.fs");
-
 
 	// Background
 	GLuint texID = loadTexture("./textures/2.png");
@@ -105,7 +111,6 @@ int main()
 	backgroud.setTexture(texID);
 	backgroud.setShader(shader);
 
-
 	// Personagens
 
 	GLuint img[28];
@@ -113,7 +118,7 @@ int main()
 
 	int i = 0;
 	int y = 1;
-	
+
 	while (i <= 28 || y <= 28) {
 
 		int posX[28];
@@ -128,11 +133,11 @@ int main()
 		i++;
 		y++;
 	}
-	
+
 	// Yoshi
 
 	GLuint texID2 = loadTexture("./textures/yoshi.png");
-	
+
 	Sprite sprPlayer;
 	sprPlayer.setSpritesheet(texID2, 2, 8);
 	sprPlayer.setPosition(glm::vec3(20.0, 20.0, 0.0));
@@ -186,8 +191,34 @@ int main()
 			p++;
 		}
 
+		Sleep(200);
+
 		sprShader->Use();
 		sprShader->setMat4("projection", glm::value_ptr(ortho));
+
+		if (playerFacingRight) {
+			if (walking) {
+				sprPlayer.setAnimation(1);
+				sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x + 10, sprPlayer.getPosition().y, 0));
+			}
+		}
+		else if (playerFacingLeft) {
+			if (walking) {
+				sprPlayer.setAnimation(0);
+				sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x - 10, sprPlayer.getPosition().y, 0));
+			}
+		}	
+		else if (playerFacingUp) {
+			if (walking) {
+				sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x, sprPlayer.getPosition().y + 10, 0));
+			}
+		}
+		else if (playerFacingDown) {
+			if (walking) {
+				sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x, sprPlayer.getPosition().y - 10 , 0));
+			}
+		}
+		
 
 		sprPlayer.update();
 		sprPlayer.draw();
@@ -207,6 +238,41 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
+		
+	if (key == GLFW_KEY_D && (action == GLFW_PRESS)) {
+		playerFacingRight = true;
+		playerFacingLeft = false;
+		playerFacingUp = false;
+		playerFacingDown = false;
+		walking = true;
+	}
+
+	if (key == GLFW_KEY_A && (action == GLFW_PRESS)) {
+		playerFacingRight = false;
+		playerFacingLeft = true;
+		playerFacingUp = false;
+		playerFacingDown = false;
+		walking = true;
+	}
+
+	if (key == GLFW_KEY_W && (action == GLFW_PRESS)) {
+		playerFacingRight = false;
+		playerFacingLeft = false;
+		playerFacingUp = true;
+		playerFacingDown = false;
+		walking = true;
+	}
+	
+
+	if (key == GLFW_KEY_S && (action == GLFW_PRESS)) {
+		playerFacingRight = false;
+		playerFacingLeft = false;
+		playerFacingUp = false;
+		playerFacingDown = true;
+		walking = true;
+	
+	}
+		
 }
 
 int loadTexture(string path)

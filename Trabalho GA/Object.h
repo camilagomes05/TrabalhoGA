@@ -30,6 +30,7 @@ public:
 	inline void setAngle(float angle) { this->angle = angle; }
 	inline void setTexture(GLuint texID) { this->texID = texID; }
 	inline void setShader(Shader* shader) { this->shader = shader; }
+	inline glm::vec3 getPosition() { return position; }
 
 protected:
 
