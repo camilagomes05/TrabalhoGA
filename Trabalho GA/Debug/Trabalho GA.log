@@ -1,4 +1,4 @@
 ﻿  Origem.cpp
-C:\Users\camyl\OneDrive\Área de Trabalho\Trabalho GA\Trabalho GA\Origem.cpp(350,14): warning C4101: 'EBO': variável local não referenciada
-C:\Users\camyl\OneDrive\Área de Trabalho\Trabalho GA\Trabalho GA\Origem.cpp(350,9): warning C4101: 'VBO': variável local não referenciada
+C:\Users\camyl\OneDrive\Área de Trabalho\Trabalho GA\Trabalho GA\Origem.cpp(354,14): warning C4101: 'EBO': variável local não referenciada
+C:\Users\camyl\OneDrive\Área de Trabalho\Trabalho GA\Trabalho GA\Origem.cpp(354,9): warning C4101: 'VBO': variável local não referenciada
   Trabalho GA.vcxproj -> C:\Users\camyl\OneDrive\Área de Trabalho\Trabalho GA\Trabalho GA\Debug\Trabalho GA.exe

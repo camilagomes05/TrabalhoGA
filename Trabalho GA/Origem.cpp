@@ -127,7 +127,7 @@ int main()
 		img[i] = loadTexture("./textures/sh" + to_string(y) + ".png");
 		player[i].initialize();
 		player[i].setPosition(glm::vec3(posX[i + 1] = (rand() % 700), posY[i + 1] = (rand() % 500), 0.0));
-		player[i].setDimensions(glm::vec3(20.0, 20.0, 1.0));
+		player[i].setDimensions(glm::vec3(25.0, 25.0, 1.0));
 		player[i].setTexture(img[i]);
 		player[i].setShader(shader);
 		i++;
@@ -211,7 +211,7 @@ int main()
 				sprPlayer.setAnimation(0);
 				sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x - 10, sprPlayer.getPosition().y, 0));
 			}
-		}	
+		}
 		else if (up) {
 			if (pause) {
 				sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x, sprPlayer.getPosition().y + 10, 0));
@@ -219,17 +219,15 @@ int main()
 		}
 		else if (down) {
 			if (pause) {
-				sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x, sprPlayer.getPosition().y - 10 , 0));
+				sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x, sprPlayer.getPosition().y - 10, 0));
 			}
 		}
-
 
 		//Colisão das bordas
 		if (sprPlayer.getPosition().x >= 800) {
 			sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x - 10, sprPlayer.getPosition().y, 1));
 			playerFacingRight = true;
 		}
-
 		else if (sprPlayer.getPosition().x <= 0) {
 			sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x + 10, sprPlayer.getPosition().y, 1));
 			playerFacingLeft = false;
@@ -244,6 +242,12 @@ int main()
 			down = true;
 		}
 
+		// Tentativa de colisão entre Sprite e Object (que não deu certo :/ )
+		while (sprPlayer.getPosition().x == player[p].getPosition().x && sprPlayer.getPosition().y == player[p].getPosition().y) {
+			player[p].setPosition(glm::vec3(-200.0, -200.0, 0));
+			p++;
+		}
+		
 		
 		//Chamar sprite
 		sprPlayer.update();
