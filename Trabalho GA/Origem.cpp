@@ -30,9 +30,9 @@ using namespace std;
 
 bool playerFacingRight = true;
 bool playerFacingLeft = true;
-bool playerFacingUp = true;
-bool playerFacingDown = true;
-bool walking = false;
+bool up = true;
+bool down = true;
+bool pause = false;
 
 
 // Protótipo da função de callback de teclado
@@ -201,27 +201,49 @@ int main()
 
 		// Yoshi caminhar
 		if (playerFacingRight) {
-			if (walking) {
+			if (pause) {
 				sprPlayer.setAnimation(1);
 				sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x + 10, sprPlayer.getPosition().y, 0));
 			}
 		}
 		else if (playerFacingLeft) {
-			if (walking) {
+			if (pause) {
 				sprPlayer.setAnimation(0);
 				sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x - 10, sprPlayer.getPosition().y, 0));
 			}
 		}	
-		else if (playerFacingUp) {
-			if (walking) {
+		else if (up) {
+			if (pause) {
 				sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x, sprPlayer.getPosition().y + 10, 0));
 			}
 		}
-		else if (playerFacingDown) {
-			if (walking) {
+		else if (down) {
+			if (pause) {
 				sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x, sprPlayer.getPosition().y - 10 , 0));
 			}
 		}
+
+
+		//Colisão das bordas
+		if (sprPlayer.getPosition().x == 1000) {
+			sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x - 10, sprPlayer.getPosition().y, 1));
+			playerFacingLeft = true;
+		}
+
+		else if (sprPlayer.getPosition().x < 0) {
+			sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x + 10, sprPlayer.getPosition().y, 1));
+			playerFacingRight = true;
+		}
+
+		else if (sprPlayer.getPosition().y == 800) {
+			sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x, sprPlayer.getPosition().y - 10, 1));
+			down = true;
+		}
+		else if (sprPlayer.getPosition().y < 0) {
+			sprPlayer.setPosition(glm::vec3(sprPlayer.getPosition().x, sprPlayer.getPosition().y + 10, 1));
+			up = true;
+		}
+
 		
 		//Chamar sprite
 		sprPlayer.update();
@@ -247,34 +269,34 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_D && (action == GLFW_PRESS)) {
 		playerFacingRight = true;
 		playerFacingLeft = false;
-		playerFacingUp = false;
-		playerFacingDown = false;
-		walking = true;
+		up = false;
+		down = false;
+		pause = true;
 	}
 
 	if (key == GLFW_KEY_A && (action == GLFW_PRESS)) {
 		playerFacingRight = false;
 		playerFacingLeft = true;
-		playerFacingUp = false;
-		playerFacingDown = false;
-		walking = true;
+		up = false;
+		down = false;
+		pause = true;
 	}
 
 	if (key == GLFW_KEY_W && (action == GLFW_PRESS)) {
 		playerFacingRight = false;
 		playerFacingLeft = false;
-		playerFacingUp = true;
-		playerFacingDown = false;
-		walking = true;
+		up = true;
+		down = false;
+		pause = true;
 	}
 	
 
 	if (key == GLFW_KEY_S && (action == GLFW_PRESS)) {
 		playerFacingRight = false;
 		playerFacingLeft = false;
-		playerFacingUp = false;
-		playerFacingDown = true;
-		walking = true;	
+		up = false;
+		down = true;
+		pause = true;	
 	}
 		
 }
